@@ -167,18 +167,48 @@ export default function Chat() {
   };
 
   const handleQuickOption = (option: typeof CAREER_OPTIONS[0]) => {
+    setShowWelcome(false);
     sendMessage(`I'm interested in ${option.title.toLowerCase()}. Can you help me?`);
   };
 
-  return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>AI Career Guide</Text>
-        <TouchableOpacity onPress={() => Speech.speak('How can I help you today?')}>
-          <Ionicons name="volume-high" size={24} color="#4A90E2" />
-        </TouchableOpacity>
+  const renderWelcomeScreen = () => (
+    <ScrollView style={styles.welcomeContainer} contentContainerStyle={styles.welcomeContent}>
+      <View style={styles.welcomeHeader}>
+        <Text style={styles.welcomeTitle}>Hi, how can I help you today?</Text>
+        <Text style={styles.welcomeSubtitle}>
+          Choose an option below or ask me anything about your career journey
+        </Text>
       </View>
 
+      <View style={styles.optionsGrid}>
+        {CAREER_OPTIONS.map((option) => (
+          <TouchableOpacity
+            key={option.id}
+            style={[styles.optionCard, { borderLeftColor: option.color }]}
+            onPress={() => handleQuickOption(option)}
+          >
+            <View style={[styles.optionIcon, { backgroundColor: option.color + '20' }]}>
+              <Ionicons name={option.icon as any} size={32} color={option.color} />
+            </View>
+            <View style={styles.optionContent}>
+              <Text style={styles.optionTitle}>{option.title}</Text>
+              <Text style={styles.optionDescription}>{option.description}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#666" />
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <View style={styles.orDivider}>
+        <View style={styles.dividerLine} />
+        <Text style={styles.dividerText}>or ask me directly</Text>
+        <View style={styles.dividerLine} />
+      </View>
+    </ScrollView>
+  );
+
+  const renderChatScreen = () => (
+    <>
       <ScrollView
         ref={scrollViewRef}
         style={styles.messagesContainer}
@@ -202,21 +232,19 @@ export default function Chat() {
           </View>
         )}
       </ScrollView>
+    </>
+  );
 
-      <View style={styles.quickOptions}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {CAREER_OPTIONS.map((option) => (
-            <TouchableOpacity
-              key={option.id}
-              style={styles.quickOption}
-              onPress={() => handleQuickOption(option)}
-            >
-              <Ionicons name={option.icon as any} size={20} color="#4A90E2" />
-              <Text style={styles.quickOptionText}>{option.title}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>AI Career Guide</Text>
+        <TouchableOpacity onPress={() => Speech.speak('How can I help you today?')}>
+          <Ionicons name="volume-high" size={24} color="#4A90E2" />
+        </TouchableOpacity>
       </View>
+
+      {showWelcome && messages.length === 0 ? renderWelcomeScreen() : renderChatScreen()}
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
