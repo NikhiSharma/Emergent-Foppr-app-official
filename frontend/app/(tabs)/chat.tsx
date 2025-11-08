@@ -28,11 +28,35 @@ interface Message {
   timestamp: Date;
 }
 
-const QUICK_OPTIONS = [
-  { id: 1, text: 'Video sources', icon: 'videocam' },
-  { id: 2, text: 'Certifications', icon: 'school' },
-  { id: 3, text: 'Project ideas', icon: 'bulb' },
-  { id: 4, text: 'Meet mentors', icon: 'people' },
+const CAREER_OPTIONS = [
+  { 
+    id: 1, 
+    title: 'Video Sources', 
+    icon: 'videocam',
+    description: 'Learn through curated video content',
+    color: '#FF6B6B'
+  },
+  { 
+    id: 2, 
+    title: 'Certifications', 
+    icon: 'school',
+    description: 'Explore courses and certifications',
+    color: '#4ECDC4'
+  },
+  { 
+    id: 3, 
+    title: 'Project Ideas', 
+    icon: 'bulb',
+    description: 'Get beginner-friendly project suggestions',
+    color: '#FFE66D'
+  },
+  { 
+    id: 4, 
+    title: 'Meet Mentors', 
+    icon: 'people',
+    description: 'Connect with professionals in your field',
+    color: '#95E1D3'
+  },
 ];
 
 export default function Chat() {
