@@ -60,18 +60,12 @@ const CAREER_OPTIONS = [
 ];
 
 export default function Chat() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: 'Hi! How can I help you today? I can guide you on career paths, projects, certifications, or connect you with mentors!',
-      isAI: true,
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const [recording, setRecording] = useState(false);
   const [recordingObj, setRecordingObj] = useState<Audio.Recording | null>(null);
+  const [showWelcome, setShowWelcome] = useState(true);
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
