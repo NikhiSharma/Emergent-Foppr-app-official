@@ -233,7 +233,8 @@ async def chat_with_ai(chat_data: ChatMessage, current_user: dict = Depends(get_
 @api_router.get("/chat/history")
 async def get_chat_history(current_user: dict = Depends(get_current_user)):
     conversations = await db.conversations.find(
-        {"user_id": current_user["id"]}
+        {"user_id": current_user["id"]},
+        {"_id": 0}  # Exclude MongoDB ObjectId
     ).sort("created_at", -1).limit(50).to_list(50)
     return conversations
 
