@@ -295,7 +295,8 @@ async def get_matches(current_user: dict = Depends(get_current_user)):
 @api_router.get("/messages/{match_id}")
 async def get_messages(match_id: str, current_user: dict = Depends(get_current_user)):
     messages = await db.messages.find(
-        {"match_id": match_id}
+        {"match_id": match_id},
+        {"_id": 0}  # Exclude MongoDB ObjectId
     ).sort("created_at", 1).to_list(1000)
     
     return messages
