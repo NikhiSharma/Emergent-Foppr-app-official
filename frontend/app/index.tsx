@@ -1,16 +1,48 @@
-import { Text, View, StyleSheet, Image } from "react-native";
-
-const EXPO_PUBLIC_BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Index() {
-  console.log(EXPO_PUBLIC_BACKEND_URL, "EXPO_PUBLIC_BACKEND_URL");
+  const router = useRouter();
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      if (token) {
+        router.replace('/(tabs)/chat');
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../assets/images/app-image.png")}
-        style={styles.image}
-      />
+      <View style={styles.content}>
+        <Text style={styles.title}>CareerConnect</Text>
+        <Text style={styles.subtitle}>AI-Powered Career Guidance & Mentorship</Text>
+        
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={styles.primaryButton}
+            onPress={() => router.push('/auth/signup')}
+          >
+            <Text style={styles.primaryButtonText}>Get Started</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.secondaryButton}
+            onPress={() => router.push('/auth/login')}
+          >
+            <Text style={styles.secondaryButtonText}>Sign In</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 }
@@ -18,13 +50,55 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0c0c0c",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#0A0A0A',
   },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  title: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#999999',
+    marginBottom: 64,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    width: '100%',
+    gap: 16,
+  },
+  primaryButton: {
+    backgroundColor: '#4A90E2',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  secondaryButton: {
+    backgroundColor: 'transparent',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#4A90E2',
+  },
+  secondaryButtonText: {
+    color: '#4A90E2',
+    fontSize: 18,
+    fontWeight: '600',
   },
 });
