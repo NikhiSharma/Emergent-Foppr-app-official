@@ -8,7 +8,7 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>CareerConnect</Text>
+        <Text style={styles.title}>Foppr</Text>
         <Text style={styles.subtitle}>AI-Powered Career Guidance & Mentorship</Text>
         
         <View style={styles.buttonContainer}>
