@@ -205,14 +205,14 @@ export default function Chat() {
 
       <View style={styles.quickOptions}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {QUICK_OPTIONS.map((option) => (
+          {CAREER_OPTIONS.map((option) => (
             <TouchableOpacity
               key={option.id}
               style={styles.quickOption}
               onPress={() => handleQuickOption(option)}
             >
               <Ionicons name={option.icon as any} size={20} color="#4A90E2" />
-              <Text style={styles.quickOptionText}>{option.text}</Text>
+              <Text style={styles.quickOptionText}>{option.title}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
