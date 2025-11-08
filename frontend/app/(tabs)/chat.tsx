@@ -166,8 +166,8 @@ export default function Chat() {
     }
   };
 
-  const handleQuickOption = (option: typeof QUICK_OPTIONS[0]) => {
-    sendMessage(`I'm interested in ${option.text.toLowerCase()}. Can you help me?`);
+  const handleQuickOption = (option: typeof CAREER_OPTIONS[0]) => {
+    sendMessage(`I'm interested in ${option.title.toLowerCase()}. Can you help me?`);
   };
 
   return (
