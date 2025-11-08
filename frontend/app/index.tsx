@@ -1,25 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Index() {
   const router = useRouter();
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-      if (token) {
-        router.replace('/(tabs)/chat');
-      }
-    } catch (error) {
-      console.error('Auth check error:', error);
-    }
-  };
 
   return (
     <View style={styles.container}>
