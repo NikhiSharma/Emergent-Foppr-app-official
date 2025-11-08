@@ -301,6 +301,78 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
+  welcomeContainer: {
+    flex: 1,
+  },
+  welcomeContent: {
+    padding: 24,
+  },
+  welcomeHeader: {
+    marginBottom: 32,
+    alignItems: 'center',
+  },
+  welcomeTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  welcomeSubtitle: {
+    fontSize: 16,
+    color: '#999',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  optionsGrid: {
+    gap: 16,
+    marginBottom: 32,
+  },
+  optionCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1A1A1A',
+    padding: 16,
+    borderRadius: 16,
+    gap: 16,
+    borderLeftWidth: 4,
+  },
+  optionIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  optionContent: {
+    flex: 1,
+    gap: 4,
+  },
+  optionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  optionDescription: {
+    fontSize: 14,
+    color: '#999',
+    lineHeight: 20,
+  },
+  orDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    gap: 12,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#333',
+  },
+  dividerText: {
+    color: '#666',
+    fontSize: 14,
+  },
   messagesContainer: {
     flex: 1,
   },
@@ -328,29 +400,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     lineHeight: 22,
-  },
-  quickOptions: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#333',
-  },
-  quickOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1A1A1A',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 8,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: '#4A90E2',
-  },
-  quickOptionText: {
-    color: '#4A90E2',
-    fontSize: 14,
-    fontWeight: '500',
   },
   inputContainer: {
     flexDirection: 'row',
