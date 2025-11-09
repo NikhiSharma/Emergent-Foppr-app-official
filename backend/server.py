@@ -516,7 +516,7 @@ async def send_message(sid, data):
 
 @api_router.post("/transcribe")
 async def transcribe_audio(audio_file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
-    """Transcribe audio to text using OpenAI Whisper via Emergent proxy"""
+    """Transcribe audio to text using OpenAI Whisper directly"""
     try:
         # Save uploaded file temporarily
         with tempfile.NamedTemporaryFile(delete=False, suffix='.m4a') as temp_file:
@@ -524,8 +524,8 @@ async def transcribe_audio(audio_file: UploadFile = File(...), current_user: dic
             temp_file.write(content)
             temp_file_path = temp_file.name
         
-        # Use OpenAI Whisper API through emergent proxy
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        # Use OpenAI Whisper API directly
+        async with httpx.AsyncClient(timeout=60.0) as client:
             with open(temp_file_path, 'rb') as audio:
                 files = {
                     'file': ('audio.m4a', audio, 'audio/m4a'),
@@ -537,10 +537,9 @@ async def transcribe_audio(audio_file: UploadFile = File(...), current_user: dic
                     'Authorization': f'Bearer {os.environ.get("EMERGENT_LLM_KEY")}',
                 }
                 
-                # Use emergent proxy URL for whisper
-                proxy_url = os.getenv("INTEGRATION_PROXY_URL", "https://integrations.emergentagent.com")
+                # Try OpenAI API directly first
                 response = await client.post(
-                    f'{proxy_url}/llm/v1/audio/transcriptions',
+                    'https://api.openai.com/v1/audio/transcriptions',
                     files=files,
                     data=data,
                     headers=headers
@@ -548,23 +547,28 @@ async def transcribe_audio(audio_file: UploadFile = File(...), current_user: dic
                 
                 if response.status_code == 200:
                     result = response.json()
-                    # Clean up temp file
                     os.unlink(temp_file_path)
-                    return {"text": result.get('text', '')}
-                else:
-                    logger.error(f"Whisper API error: {response.text}")
-                    os.unlink(temp_file_path)
-                    raise HTTPException(status_code=500, detail="Failed to transcribe audio")
+                    transcribed_text = result.get('text', '').strip()
                     
+                    if not transcribed_text:
+                        raise HTTPException(status_code=400, detail="No speech detected in audio")
+                    
+                    return {"text": transcribed_text}
+                else:
+                    logger.error(f"Whisper API error: {response.status_code} - {response.text}")
+                    os.unlink(temp_file_path)
+                    raise HTTPException(status_code=500, detail="Voice transcription temporarily unavailable. Please type your message.")
+                    
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Transcription error: {str(e)}")
-        # Try to clean up temp file if it exists
         try:
             if 'temp_file_path' in locals():
                 os.unlink(temp_file_path)
         except:
             pass
-        raise HTTPException(status_code=500, detail=f"Transcription error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Voice transcription error. Please type your message.")
 
 # ==================== SEED DATA ENDPOINT ====================
 
