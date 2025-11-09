@@ -156,7 +156,7 @@ export default function Discover() {
         <View style={styles.noMoreCards}>
           <Ionicons name="checkmark-circle" size={80} color={accentColor} />
           <Text style={[styles.noMoreText, { color: colors.text }]}>No more profiles</Text>
-          <Text style={[styles.noMoreSubtext, { color: colors.textSecondary }]}>Check back later for more mentors!</Text>
+          <Text style={[styles.noMoreSubtext, { color: colors.textSecondary }]}>Check back later for more peers!</Text>
         </View>
       );
     }
