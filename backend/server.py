@@ -224,20 +224,51 @@ async def chat_with_ai(chat_data: ChatMessage, current_user: dict = Depends(get_
         user_message = UserMessage(text=chat_data.message)
         response = await chat.send_message(user_message)
         
+        # Check if response contains SHOW_PROFILES command
+        profiles_data = None
+        clean_response = response
+        
+        if "SHOW_PROFILES:" in response:
+            # Extract field and clean response
+            lines = response.split('\n')
+            for line in lines:
+                if line.startswith("SHOW_PROFILES:"):
+                    field = line.replace("SHOW_PROFILES:", "").strip()
+                    # Fetch 2 profiles from that field
+                    profiles = await db.profiles.find({
+                        "$or": [
+                            {"field": {"$regex": field, "$options": "i"}},
+                            {"career": {"$regex": field, "$options": "i"}}
+                        ]
+                    }).limit(2).to_list(2)
+                    
+                    if profiles:
+                        profiles_data = [Profile(**p) for p in profiles]
+                    
+                    # Remove the command from response
+                    clean_response = '\n'.join([l for l in lines if not l.startswith("SHOW_PROFILES:")])
+                    break
+        
         # Store conversation in DB
         conversation_entry = {
             "user_id": current_user["id"],
             "user_message": chat_data.message,
-            "ai_response": response,
+            "ai_response": clean_response,
             "chat_type": chat_data.chat_type,
             "created_at": datetime.utcnow()
         }
         await db.conversations.insert_one(conversation_entry)
         
-        return {
-            "response": response,
+        result = {
+            "response": clean_response,
             "type": "text"
         }
+        
+        if profiles_data:
+            result["profiles"] = [p.dict() for p in profiles_data]
+            result["type"] = "profiles"
+        
+        return result
     except Exception as e:
         logger.error(f"Error in AI chat: {str(e)}")
         raise HTTPException(status_code=500, detail=f"AI chat error: {str(e)}")
