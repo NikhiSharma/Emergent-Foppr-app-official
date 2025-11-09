@@ -201,39 +201,61 @@ export default function Chat() {
   };
 
   const renderWelcomeScreen = () => (
-    <ScrollView style={styles.welcomeContainer} contentContainerStyle={styles.welcomeContent}>
-      <View style={styles.welcomeHeader}>
-        <Text style={styles.welcomeTitle}>Hi, how can I help you today?</Text>
-        <Text style={styles.welcomeSubtitle}>
-          Choose an option below or ask me anything about your career journey
+    <View style={styles.welcomeContainer}>
+      <View style={styles.greetingSection}>
+        <Text style={styles.greetingText}>
+          How is your day going{userName ? ` ${userName}` : ''}?
         </Text>
-      </View>
-
-      <View style={styles.optionsGrid}>
-        {CAREER_OPTIONS.map((option) => (
-          <TouchableOpacity
-            key={option.id}
-            style={[styles.optionCard, { borderLeftColor: option.color }]}
-            onPress={() => handleQuickOption(option)}
+        
+        <View style={styles.inputOptionsContainer}>
+          <TouchableOpacity 
+            style={styles.voiceInputButton}
+            onPress={recording ? stopRecording : startRecording}
           >
-            <View style={[styles.optionIcon, { backgroundColor: option.color + '20' }]}>
-              <Ionicons name={option.icon as any} size={32} color={option.color} />
-            </View>
-            <View style={styles.optionContent}>
-              <Text style={styles.optionTitle}>{option.title}</Text>
-              <Text style={styles.optionDescription}>{option.description}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#666" />
+            <Ionicons 
+              name={recording ? 'stop-circle' : 'mic'} 
+              size={48} 
+              color={recording ? '#E91E63' : '#4A90E2'} 
+            />
+            <Text style={styles.voiceInputText}>
+              {recording ? 'Tap to stop' : 'Tap to speak'}
+            </Text>
           </TouchableOpacity>
-        ))}
+
+          <View style={styles.orTextContainer}>
+            <View style={styles.orLine} />
+            <Text style={styles.orText}>or</Text>
+            <View style={styles.orLine} />
+          </View>
+
+          <Text style={styles.typePrompt}>Type how you're feeling</Text>
+        </View>
       </View>
 
-      <View style={styles.orDivider}>
-        <View style={styles.dividerLine} />
-        <Text style={styles.dividerText}>or ask me directly</Text>
-        <View style={styles.dividerLine} />
-      </View>
-    </ScrollView>
+      {showCareerOptions && (
+        <ScrollView style={styles.optionsScrollView}>
+          <Text style={styles.optionsTitle}>How can I help with your career?</Text>
+          <View style={styles.optionsGrid}>
+            {CAREER_OPTIONS.map((option) => (
+              <TouchableOpacity
+                key={option.id}
+                style={[styles.optionCard, { borderLeftColor: option.color }]}
+                onPress={() => handleQuickOption(option)}
+              >
+                <View style={[styles.optionIcon, { backgroundColor: option.color + '20' }]}>
+                  <Ionicons name={option.icon as any} size={32} color={option.color} />
+                </View>
+                <View style={styles.optionContent}>
+                  <Text style={styles.optionTitle}>{option.title}</Text>
+                  <Text style={styles.optionDescription}>{option.description}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#666" />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      )}
+    </View>
   );
 
   const renderChatScreen = () => (
