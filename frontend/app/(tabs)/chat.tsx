@@ -20,8 +20,8 @@ import Constants from 'expo-constants';
 import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
 import { useRouter } from 'expo-router';
-import { useThemeStore, getThemeColors, gradientColors } from '../../../store/themeStore';
-import ThemeCustomizer from '../../../components/ThemeCustomizer';
+import { useThemeStore, getThemeColors, gradientColors } from '../../store/themeStore';
+import ThemeCustomizer from '../../components/ThemeCustomizer';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL;
 
