@@ -128,7 +128,7 @@ export default function Matches() {
           <Ionicons name="heart-dislike" size={64} color={colors.textSecondary} />
           <Text style={[styles.emptyText, { color: colors.text }]}>No matches yet</Text>
           <Text style={[styles.emptySubtext, { color: colors.textSecondary }]}>
-            Start swiping in Discover to find mentors!
+            Start swiping in Discover to find peers!
           </Text>
           <TouchableOpacity
             style={[styles.discoverButton, { backgroundColor: accentColor }]}
