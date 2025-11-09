@@ -363,7 +363,7 @@ export default function Chat() {
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.inputContainer}
+        style={[styles.inputContainer, { backgroundColor: colors.background, borderTopColor: colors.border }]}
       >
         <TouchableOpacity
           style={styles.voiceButton}
@@ -372,14 +372,14 @@ export default function Chat() {
           <Ionicons
             name={recording ? 'stop-circle' : 'mic'}
             size={24}
-            color={recording ? '#E91E63' : '#4A90E2'}
+            color={recording ? '#E91E63' : accentColor}
           />
         </TouchableOpacity>
 
         <TextInput
-          style={styles.input}
+          style={[styles.input, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }]}
           placeholder="Ask me anything..."
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textSecondary}
           value={inputText}
           onChangeText={setInputText}
           multiline
@@ -387,7 +387,7 @@ export default function Chat() {
         />
 
         <TouchableOpacity
-          style={styles.sendButton}
+          style={[styles.sendButton, { backgroundColor: accentColor }]}
           onPress={() => sendMessage(inputText)}
           disabled={loading || !inputText.trim()}
         >
