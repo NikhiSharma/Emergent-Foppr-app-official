@@ -58,15 +58,16 @@ export default function Discover() {
   const seedProfilesIfNeeded = async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
+      // Call the new seed endpoint that creates test users
       await axios.post(
-        `${API_URL}/api/seed/profiles`,
+        `${API_URL}/api/seed/test-users`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSeededProfiles(true);
     } catch (error) {
       console.error('Seed error:', error);
-      setSeededProfiles(true);
+      setSeededProfiles(true); // Continue anyway
     }
   };
 
