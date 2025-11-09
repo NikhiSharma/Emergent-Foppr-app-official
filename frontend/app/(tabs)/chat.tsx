@@ -238,7 +238,7 @@ export default function Chat() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>AI Career Guide</Text>
+        <Text style={styles.headerTitle}>Foppr</Text>
         <TouchableOpacity onPress={() => Speech.speak('How can I help you today?')}>
           <Ionicons name="volume-high" size={24} color="#4A90E2" />
         </TouchableOpacity>
