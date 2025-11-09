@@ -18,11 +18,28 @@ import { Ionicons } from '@expo/vector-icons';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL;
 
+const WELCOME_MESSAGES = [
+  "Welcome back, legend.",
+  "Good to see you, builder.",
+  "Sup genius, ready to ship?",
+  "Look who's back! Time to build.",
+  "What's the vibe today?",
+  "Ah, the builder returns.",
+  "Your next commit's waiting.",
+  "Welcome back to the other side of ordinary.",
+  "Hey there! Missed you.",
+  "Back again? We love that energy.",
+  "Good to see you, let's make magic.",
+];
+
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [welcomeMessage] = useState(() => 
+    WELCOME_MESSAGES[Math.floor(Math.random() * WELCOME_MESSAGES.length)]
+  );
 
   const handleLogin = async () => {
     if (!email || !password) {
