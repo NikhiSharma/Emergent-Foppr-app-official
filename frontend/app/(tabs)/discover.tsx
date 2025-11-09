@@ -206,7 +206,7 @@ export default function Discover() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Discover Mentors</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Discover Peers</Text>
       </View>
 
       <View style={styles.cardContainer}>{renderCard()}</View>
