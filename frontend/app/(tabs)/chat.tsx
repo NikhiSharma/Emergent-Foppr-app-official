@@ -341,15 +341,25 @@ export default function Chat() {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Foppr</Text>
-        <TouchableOpacity onPress={() => Speech.speak('How can I help you today?')}>
-          <Ionicons name="volume-high" size={24} color="#4A90E2" />
-        </TouchableOpacity>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Foppr</Text>
+        <View style={{ flexDirection: 'row', gap: 12 }}>
+          <TouchableOpacity onPress={() => setShowThemeCustomizer(true)}>
+            <Ionicons name="color-palette" size={24} color={accentColor} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => Speech.speak('How can I help you today?')}>
+            <Ionicons name="volume-high" size={24} color={accentColor} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {showWelcome && messages.length === 0 ? renderWelcomeScreen() : renderChatScreen()}
+      
+      <ThemeCustomizer 
+        visible={showThemeCustomizer}
+        onClose={() => setShowThemeCustomizer(false)}
+      />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
