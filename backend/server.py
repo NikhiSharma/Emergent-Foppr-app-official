@@ -202,8 +202,75 @@ async def get_me(current_user: dict = Depends(get_current_user)):
     return {
         "id": current_user["id"],
         "email": current_user["email"],
-        "name": current_user["name"]
+        "name": current_user["name"],
+        "bio": current_user.get("bio"),
+        "field": current_user.get("field"),
+        "career": current_user.get("career"),
+        "university": current_user.get("university"),
+        "skills": current_user.get("skills", []),
+        "interests": current_user.get("interests", []),
+        "looking_for": current_user.get("looking_for", "everyone"),
+        "profile_image": current_user.get("profile_image"),
+        "is_profile_complete": current_user.get("is_profile_complete", False)
     }
+
+class ProfileUpdate(BaseModel):
+    bio: Optional[str] = None
+    field: Optional[str] = None
+    career: Optional[str] = None
+    university: Optional[str] = None
+    skills: Optional[List[str]] = None
+    interests: Optional[List[str]] = None
+    looking_for: Optional[str] = None
+    profile_image: Optional[str] = None
+
+@api_router.put("/profile/update")
+async def update_profile(profile_data: ProfileUpdate, current_user: dict = Depends(get_current_user)):
+    update_fields = profile_data.dict(exclude_unset=True)
+    
+    # Check if profile is complete
+    if update_fields:
+        required_fields = ["bio", "field", "career"]
+        is_complete = all(
+            current_user.get(field) or update_fields.get(field)
+            for field in required_fields
+        )
+        update_fields["is_profile_complete"] = is_complete
+    
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": update_fields}
+    )
+    
+    updated_user = await db.users.find_one({"id": current_user["id"]})
+    return {
+        "message": "Profile updated successfully",
+        "is_profile_complete": updated_user.get("is_profile_complete", False)
+    }
+
+@api_router.post("/profile/update-interests")
+async def update_interests_from_chat(interests: List[str], current_user: dict = Depends(get_current_user)):
+    """Update user interests based on AI chat analysis"""
+    current_interests = current_user.get("interests", [])
+    
+    # Add new interests without duplicates
+    updated_interests = list(set(current_interests + interests))
+    
+    # Auto-update looking_for if specific interest mentioned
+    looking_for = current_user.get("looking_for", "everyone")
+    if interests and looking_for == "everyone":
+        # Set primary interest as looking_for
+        looking_for = interests[0]
+    
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {
+            "interests": updated_interests,
+            "looking_for": looking_for
+        }}
+    )
+    
+    return {"message": "Interests updated", "interests": updated_interests}
 
 # ==================== AI CHAT ENDPOINTS ====================
 
