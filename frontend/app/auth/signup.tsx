@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Constants from 'expo-constants';
+import { Ionicons } from '@expo/vector-icons';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL;
 
