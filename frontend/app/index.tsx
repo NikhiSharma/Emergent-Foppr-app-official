@@ -50,7 +50,6 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   content: {
     flex: 1,
@@ -61,13 +60,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginBottom: 16,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
-    color: '#999999',
     marginBottom: 64,
     textAlign: 'center',
   },
@@ -76,10 +73,12 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   primaryButton: {
-    backgroundColor: '#4A90E2',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  buttonInner: {
     paddingVertical: 16,
     paddingHorizontal: 32,
-    borderRadius: 12,
     alignItems: 'center',
   },
   primaryButtonText: {
@@ -94,10 +93,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#4A90E2',
   },
   secondaryButtonText: {
-    color: '#4A90E2',
     fontSize: 18,
     fontWeight: '600',
   },
