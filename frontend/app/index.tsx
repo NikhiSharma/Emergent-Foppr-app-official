@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useThemeStore, getThemeColors, gradientColors } from './store/themeStore';
+import { useThemeStore, getThemeColors, gradientColors } from '../store/themeStore';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Index() {
