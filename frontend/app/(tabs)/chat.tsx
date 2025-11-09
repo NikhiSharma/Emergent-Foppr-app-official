@@ -182,16 +182,56 @@ export default function Chat() {
     if (!recordingObj) return;
 
     try {
+      setLoading(true);
       await recordingObj.stopAndUnloadAsync();
       const uri = recordingObj.getURI();
       setRecording(false);
       setRecordingObj(null);
+
+      if (!uri) {
+        Alert.alert('Error', 'Failed to record audio');
+        setLoading(false);
+        return;
+      }
+
+      // Send audio to backend for transcription
+      const token = await AsyncStorage.getItem('authToken');
+      const formData = new FormData();
       
-      // For MVP, we'll just show a message that voice is recorded
-      // In production, you would transcribe this and send to AI
-      Alert.alert('Voice recorded', 'Voice feature coming soon! Please use text for now.');
-    } catch (error) {
-      console.error('Failed to stop recording:', error);
+      // Get the audio file
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      
+      formData.append('audio_file', {
+        uri: uri,
+        type: 'audio/m4a',
+        name: 'recording.m4a',
+      } as any);
+
+      const transcriptionResponse = await axios.post(
+        `${API_URL}/api/transcribe`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      const transcribedText = transcriptionResponse.data.text;
+      
+      if (transcribedText && transcribedText.trim()) {
+        // Send the transcribed text as a message
+        await sendMessage(transcribedText);
+      } else {
+        Alert.alert('Error', 'Could not understand the audio. Please try again.');
+        setLoading(false);
+      }
+    } catch (error: any) {
+      console.error('Failed to transcribe audio:', error);
+      Alert.alert('Error', 'Failed to process voice input. Please try typing instead.');
+      setLoading(false);
     }
   };
 
