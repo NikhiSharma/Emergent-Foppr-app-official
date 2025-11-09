@@ -431,16 +431,29 @@ async def swipe_profile(swipe_data: SwipeAction, current_user: dict = Depends(ge
 
 @api_router.get("/matches")
 async def get_matches(current_user: dict = Depends(get_current_user)):
+    """Get all matches for current user - retrieves real user profiles"""
     matches = await db.matches.find({"user_id": current_user["id"]}).to_list(100)
     
-    # Get profile details for each match
+    # Get user profile details for each match
     result = []
     for match in matches:
-        profile = await db.profiles.find_one({"id": match["profile_id"]})
-        if profile:
+        # Look up the matched user (not in profiles collection, but users collection)
+        matched_user = await db.users.find_one(
+            {"id": match["profile_id"]},
+            {"hashed_password": 0}  # Don't include password
+        )
+        if matched_user:
             result.append({
                 "match_id": match["id"],
-                "profile": Profile(**profile)
+                "profile": {
+                    "id": matched_user["id"],
+                    "name": matched_user["name"],
+                    "bio": matched_user.get("bio", "No bio available"),
+                    "career": matched_user.get("career", "Career not specified"),
+                    "university": matched_user.get("university", "University not specified"),
+                    "field": matched_user.get("field", "Field not specified"),
+                    "image": matched_user.get("profile_image", "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzRBOTBFMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPj88L3RleHQ+PC9zdmc+")
+                }
             })
     
     return result
