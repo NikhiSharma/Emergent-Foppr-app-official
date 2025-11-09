@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
+import { useThemeStore, getThemeColors, gradientColors } from '../../store/themeStore';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -33,6 +34,10 @@ interface Profile {
 
 export default function Discover() {
   const router = useRouter();
+  const { mode, gradient, loadTheme } = useThemeStore();
+  const colors = getThemeColors(mode);
+  const accentColor = gradientColors[gradient][0];
+
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -40,6 +45,7 @@ export default function Discover() {
   const [seededProfiles, setSeededProfiles] = useState(false);
 
   useEffect(() => {
+    loadTheme();
     seedProfilesIfNeeded();
   }, []);
 
@@ -60,7 +66,7 @@ export default function Discover() {
       setSeededProfiles(true);
     } catch (error) {
       console.error('Seed error:', error);
-      setSeededProfiles(true); // Continue anyway
+      setSeededProfiles(true);
     }
   };
 
@@ -147,9 +153,9 @@ export default function Discover() {
     if (currentIndex >= profiles.length) {
       return (
         <View style={styles.noMoreCards}>
-          <Ionicons name="checkmark-circle" size={80} color="#4A90E2" />
-          <Text style={styles.noMoreText}>No more profiles</Text>
-          <Text style={styles.noMoreSubtext}>Check back later for more mentors!</Text>
+          <Ionicons name="checkmark-circle" size={80} color={accentColor} />
+          <Text style={[styles.noMoreText, { color: colors.text }]}>No more profiles</Text>
+          <Text style={[styles.noMoreSubtext, { color: colors.textSecondary }]}>Check back later for more mentors!</Text>
         </View>
       );
     }
@@ -171,16 +177,16 @@ export default function Discover() {
     return (
       <Animated.View
         key={profile.id}
-        style={[styles.card, rotateAndTranslate]}
+        style={[styles.card, { backgroundColor: colors.surface }, rotateAndTranslate]}
         {...panResponder.panHandlers}
       >
         <Image source={{ uri: profile.image }} style={styles.cardImage} />
         <View style={styles.cardContent}>
-          <Text style={styles.cardName}>{profile.name}</Text>
-          <Text style={styles.cardField}>{profile.field}</Text>
-          <Text style={styles.cardCareer}>{profile.career}</Text>
-          <Text style={styles.cardUniversity}>{profile.university}</Text>
-          <Text style={styles.cardBio}>{profile.bio}</Text>
+          <Text style={[styles.cardName, { color: colors.text }]}>{profile.name}</Text>
+          <Text style={[styles.cardField, { color: accentColor }]}>{profile.field}</Text>
+          <Text style={[styles.cardCareer, { color: colors.text }]}>{profile.career}</Text>
+          <Text style={[styles.cardUniversity, { color: colors.textSecondary }]}>{profile.university}</Text>
+          <Text style={[styles.cardBio, { color: colors.textSecondary }]}>{profile.bio}</Text>
         </View>
       </Animated.View>
     );
@@ -188,18 +194,18 @@ export default function Discover() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading profiles...</Text>
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>Loading profiles...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Discover Mentors</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Discover Mentors</Text>
       </View>
 
       <View style={styles.cardContainer}>{renderCard()}</View>
@@ -207,17 +213,17 @@ export default function Discover() {
       {currentIndex < profiles.length && (
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
-            style={[styles.actionButton, styles.passButton]}
+            style={[styles.actionButton, styles.passButton, { backgroundColor: colors.surface, borderColor: '#FF5722' }]}
             onPress={() => forceSwipe('left')}
           >
             <Ionicons name="close" size={32} color="#FF5722" />
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.actionButton, styles.likeButton]}
+            style={[styles.actionButton, styles.likeButton, { backgroundColor: colors.surface, borderColor: accentColor }]}
             onPress={() => forceSwipe('right')}
           >
-            <Ionicons name="heart" size={32} color="#4A90E2" />
+            <Ionicons name="heart" size={32} color={accentColor} />
           </TouchableOpacity>
         </View>
       )}
@@ -228,17 +234,14 @@ export default function Discover() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   header: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
   },
   loadingContainer: {
     flex: 1,
@@ -246,7 +249,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    color: '#999',
     fontSize: 16,
   },
   cardContainer: {
@@ -258,7 +260,6 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.9,
     height: '80%',
     borderRadius: 24,
-    backgroundColor: '#1A1A1A',
     overflow: 'hidden',
   },
   cardImage: {
@@ -273,27 +274,22 @@ const styles = StyleSheet.create({
   cardName: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginBottom: 8,
   },
   cardField: {
     fontSize: 16,
-    color: '#4A90E2',
     marginBottom: 12,
   },
   cardCareer: {
     fontSize: 18,
-    color: '#FFFFFF',
     marginBottom: 8,
   },
   cardUniversity: {
     fontSize: 14,
-    color: '#999',
     marginBottom: 16,
   },
   cardBio: {
     fontSize: 16,
-    color: '#CCCCCC',
     lineHeight: 24,
   },
   noMoreCards: {
@@ -303,12 +299,10 @@ const styles = StyleSheet.create({
   noMoreText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginTop: 16,
   },
   noMoreSubtext: {
     fontSize: 16,
-    color: '#999',
     marginTop: 8,
   },
   buttonsContainer: {
@@ -328,15 +322,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-  },
-  passButton: {
-    backgroundColor: '#1A1A1A',
     borderWidth: 2,
-    borderColor: '#FF5722',
   },
-  likeButton: {
-    backgroundColor: '#1A1A1A',
-    borderWidth: 2,
-    borderColor: '#4A90E2',
-  },
+  passButton: {},
+  likeButton: {},
 });

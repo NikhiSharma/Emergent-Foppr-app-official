@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
+import { useThemeStore, getThemeColors, gradientColors } from '../../store/themeStore';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL;
 
@@ -31,10 +32,15 @@ interface Match {
 
 export default function Matches() {
   const router = useRouter();
+  const { mode, gradient, loadTheme } = useThemeStore();
+  const colors = getThemeColors(mode);
+  const accentColor = gradientColors[gradient][0];
+
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    loadTheme();
     fetchMatches();
   }, []);
 
@@ -65,52 +71,52 @@ export default function Matches() {
 
   const renderMatch = ({ item }: { item: Match }) => (
     <TouchableOpacity
-      style={styles.matchCard}
+      style={[styles.matchCard, { backgroundColor: colors.surface }]}
       onPress={() => openChat(item)}
     >
       <Image source={{ uri: item.profile.image }} style={styles.matchImage} />
       <View style={styles.matchInfo}>
-        <Text style={styles.matchName}>{item.profile.name}</Text>
-        <Text style={styles.matchField}>{item.profile.field}</Text>
-        <Text style={styles.matchCareer} numberOfLines={1}>
+        <Text style={[styles.matchName, { color: colors.text }]}>{item.profile.name}</Text>
+        <Text style={[styles.matchField, { color: accentColor }]}>{item.profile.field}</Text>
+        <Text style={[styles.matchCareer, { color: colors.textSecondary }]} numberOfLines={1}>
           {item.profile.career}
         </Text>
       </View>
       <View style={styles.chatButton}>
-        <Ionicons name="chatbubble" size={24} color="#4A90E2" />
+        <Ionicons name="chatbubble" size={24} color={accentColor} />
       </View>
     </TouchableOpacity>
   );
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Your Matches</Text>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
+        <View style={[styles.header, { borderBottomColor: colors.border }]}>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>Your Matches</Text>
         </View>
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Loading matches...</Text>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>Loading matches...</Text>
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Your Matches</Text>
-        <Text style={styles.headerSubtitle}>{matches.length} mentors</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Your Matches</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{matches.length} mentors</Text>
       </View>
 
       {matches.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Ionicons name="heart-dislike" size={64} color="#666" />
-          <Text style={styles.emptyText}>No matches yet</Text>
-          <Text style={styles.emptySubtext}>
+          <Ionicons name="heart-dislike" size={64} color={colors.textSecondary} />
+          <Text style={[styles.emptyText, { color: colors.text }]}>No matches yet</Text>
+          <Text style={[styles.emptySubtext, { color: colors.textSecondary }]}>
             Start swiping in Discover to find mentors!
           </Text>
           <TouchableOpacity
-            style={styles.discoverButton}
+            style={[styles.discoverButton, { backgroundColor: accentColor }]}
             onPress={() => router.push('/(tabs)/discover')}
           >
             <Text style={styles.discoverButtonText}>Discover Mentors</Text>
@@ -131,21 +137,17 @@ export default function Matches() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   header: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#999',
     marginTop: 4,
   },
   listContainer: {
@@ -153,7 +155,6 @@ const styles = StyleSheet.create({
   },
   matchCard: {
     flexDirection: 'row',
-    backgroundColor: '#1A1A1A',
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -172,17 +173,14 @@ const styles = StyleSheet.create({
   matchName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginBottom: 4,
   },
   matchField: {
     fontSize: 14,
-    color: '#4A90E2',
     marginBottom: 4,
   },
   matchCareer: {
     fontSize: 13,
-    color: '#999',
   },
   chatButton: {
     padding: 8,
@@ -196,17 +194,14 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginTop: 16,
   },
   emptySubtext: {
     fontSize: 16,
-    color: '#999',
     marginTop: 8,
     textAlign: 'center',
   },
   discoverButton: {
-    backgroundColor: '#4A90E2',
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 24,
