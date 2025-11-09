@@ -140,6 +140,7 @@ export default function Chat() {
         text: response.data.response,
         isAI: true,
         timestamp: new Date(),
+        profiles: response.data.profiles || undefined,
       };
 
       setMessages((prev) => [...prev, aiMessage]);
