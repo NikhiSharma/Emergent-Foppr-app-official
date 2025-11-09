@@ -77,6 +77,16 @@ class User(BaseModel):
     name: str
     hashed_password: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    # Profile fields
+    bio: Optional[str] = None
+    field: Optional[str] = None  # AI, Business, Economics, etc.
+    career: Optional[str] = None
+    university: Optional[str] = None
+    skills: Optional[List[str]] = []
+    interests: Optional[List[str]] = []
+    looking_for: Optional[str] = "everyone"  # "everyone", "AI", "Business", etc.
+    profile_image: Optional[str] = None  # base64
+    is_profile_complete: bool = False
 
 class Token(BaseModel):
     access_token: str
