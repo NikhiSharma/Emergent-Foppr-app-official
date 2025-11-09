@@ -348,6 +348,58 @@ async def send_message(sid, data):
     
     await sio.emit('new_message', message.dict(), room=match_id)
 
+# ==================== AUDIO TRANSCRIPTION ENDPOINT ====================
+
+@api_router.post("/transcribe")
+async def transcribe_audio(audio_file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    """Transcribe audio to text using OpenAI Whisper"""
+    try:
+        # Save uploaded file temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.m4a') as temp_file:
+            content = await audio_file.read()
+            temp_file.write(content)
+            temp_file_path = temp_file.name
+        
+        # Use OpenAI Whisper API via emergent key
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            with open(temp_file_path, 'rb') as audio:
+                files = {
+                    'file': ('audio.m4a', audio, 'audio/m4a'),
+                }
+                data = {
+                    'model': 'whisper-1',
+                }
+                headers = {
+                    'Authorization': f'Bearer {os.environ.get("EMERGENT_LLM_KEY")}',
+                }
+                
+                response = await client.post(
+                    'https://api.openai.com/v1/audio/transcriptions',
+                    files=files,
+                    data=data,
+                    headers=headers
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    # Clean up temp file
+                    os.unlink(temp_file_path)
+                    return {"text": result.get('text', '')}
+                else:
+                    logger.error(f"Whisper API error: {response.text}")
+                    os.unlink(temp_file_path)
+                    raise HTTPException(status_code=500, detail="Failed to transcribe audio")
+                    
+    except Exception as e:
+        logger.error(f"Transcription error: {str(e)}")
+        # Try to clean up temp file if it exists
+        try:
+            if 'temp_file_path' in locals():
+                os.unlink(temp_file_path)
+        except:
+            pass
+        raise HTTPException(status_code=500, detail=f"Transcription error: {str(e)}")
+
 # ==================== SEED DATA ENDPOINT ====================
 
 @api_router.post("/seed/profiles")
