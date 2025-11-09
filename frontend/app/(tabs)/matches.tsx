@@ -143,6 +143,14 @@ export default function Matches() {
           renderItem={renderMatch}
           keyExtractor={(item) => item.match_id}
           contentContainerStyle={styles.listContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={accentColor}
+              colors={[accentColor]}
+            />
+          }
         />
       )}
     </SafeAreaView>
