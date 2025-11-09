@@ -66,7 +66,7 @@ const CAREER_OPTIONS = [
   },
   { 
     id: 4, 
-    title: 'Meet Mentors', 
+    title: 'Meet Peers', 
     icon: 'people',
     description: 'Connect with professionals in your field',
     color: '#95E1D3'
