@@ -75,6 +75,10 @@ const CAREER_OPTIONS = [
 
 export default function Chat() {
   const router = useRouter();
+  const { mode, gradient, loadTheme } = useThemeStore();
+  const colors = getThemeColors(mode);
+  const accentColor = gradientColors[gradient][0];
+  
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
@@ -83,9 +87,11 @@ export default function Chat() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [userName, setUserName] = useState('');
   const [showCareerOptions, setShowCareerOptions] = useState(false);
+  const [showThemeCustomizer, setShowThemeCustomizer] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
+    loadTheme();
     setupAudio();
     fetchUserName();
   }, []);
