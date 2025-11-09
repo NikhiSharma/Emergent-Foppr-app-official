@@ -134,7 +134,7 @@ export default function Matches() {
             style={[styles.discoverButton, { backgroundColor: accentColor }]}
             onPress={() => router.push('/(tabs)/discover')}
           >
-            <Text style={styles.discoverButtonText}>Discover Mentors</Text>
+            <Text style={styles.discoverButtonText}>Discover Peers</Text>
           </TouchableOpacity>
         </View>
       ) : (
