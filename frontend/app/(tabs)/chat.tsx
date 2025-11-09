@@ -66,11 +66,29 @@ export default function Chat() {
   const [recording, setRecording] = useState(false);
   const [recordingObj, setRecordingObj] = useState<Audio.Recording | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [userName, setUserName] = useState('');
+  const [showCareerOptions, setShowCareerOptions] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     setupAudio();
+    fetchUserName();
   }, []);
+
+  const fetchUserName = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      const response = await axios.get(`${API_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Extract first name from full name
+      const firstName = response.data.name.split(' ')[0];
+      setUserName(firstName);
+    } catch (error) {
+      console.error('Error fetching user name:', error);
+      setUserName('there');
+    }
+  };
 
   const setupAudio = async () => {
     try {
