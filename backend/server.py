@@ -215,9 +215,9 @@ async def chat_with_ai(chat_data: ChatMessage, current_user: dict = Depends(get_
             Then add your normal encouraging message about connecting with others.
             
             Examples:
-            - User: "I want to collaborate with AI people" -> Response: "SHOW_PROFILES:AI\nThat's great! Connecting with AI professionals can..."
-            - User: "Looking to join a quantum computing project" -> Response: "SHOW_PROFILES:Quantum\nAwesome! Quantum computing is..."
-            - User: "Want to work with business minded folks" -> Response: "SHOW_PROFILES:Business\nExcellent! Business...""""
+            - User: 'I want to collaborate with AI people' -> Response: 'SHOW_PROFILES:AI\\nConnecting with AI professionals can help...'
+            - User: 'Looking to join a quantum project' -> Response: 'SHOW_PROFILES:Quantum\\nQuantum computing is exciting...'
+            - User: 'Want to work with business folks' -> Response: 'SHOW_PROFILES:Business\\nBusiness networking is great...'"""
         ).with_model("anthropic", "claude-3-7-sonnet-20250219")
         
         # Send message to Claude
