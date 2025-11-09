@@ -212,6 +212,7 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "interests": current_user.get("interests", []),
         "looking_for": current_user.get("looking_for", "everyone"),
         "profile_image": current_user.get("profile_image"),
+        "github_url": current_user.get("github_url"),
         "is_profile_complete": current_user.get("is_profile_complete", False)
     }
 
@@ -224,6 +225,7 @@ class ProfileUpdate(BaseModel):
     interests: Optional[List[str]] = None
     looking_for: Optional[str] = None
     profile_image: Optional[str] = None
+    github_url: Optional[str] = None
 
 @api_router.put("/profile/update")
 async def update_profile(profile_data: ProfileUpdate, current_user: dict = Depends(get_current_user)):
