@@ -243,14 +243,22 @@ async def get_chat_history(current_user: dict = Depends(get_current_user)):
 # ==================== PROFILE ENDPOINTS ====================
 
 @api_router.get("/profiles", response_model=List[Profile])
-async def get_profiles(current_user: dict = Depends(get_current_user)):
+async def get_profiles(current_user: dict = Depends(get_current_user), field: Optional[str] = None, limit: Optional[int] = 20):
     # Get profiles that user hasn't swiped on yet
     user_swipes = await db.swipes.find({"user_id": current_user["id"]}).to_list(1000)
     swiped_profile_ids = [swipe["profile_id"] for swipe in user_swipes]
     
-    profiles = await db.profiles.find(
-        {"id": {"$nin": swiped_profile_ids}}
-    ).to_list(20)
+    query = {"id": {"$nin": swiped_profile_ids}}
+    
+    # Filter by field if provided
+    if field:
+        query["$or"] = [
+            {"field": {"$regex": field, "$options": "i"}},
+            {"career": {"$regex": field, "$options": "i"}},
+            {"bio": {"$regex": field, "$options": "i"}}
+        ]
+    
+    profiles = await db.profiles.find(query).to_list(limit)
     
     return [Profile(**profile) for profile in profiles]
 
