@@ -243,15 +243,24 @@ export default function Chat() {
       
       if (transcribedText && transcribedText.trim()) {
         // Send the transcribed text as a message to AI
+        setShowWelcome(false);
         await sendMessage(transcribedText);
       } else {
-        Alert.alert('Error', 'Could not understand the audio. Please try again or type your message.');
+        Alert.alert(
+          '🎤 Couldn\'t hear you',
+          'Please speak clearly and try again, or type your message below.',
+          [{ text: 'OK' }]
+        );
         setLoading(false);
       }
     } catch (error: any) {
       console.error('Failed to transcribe audio:', error);
-      const errorMsg = error.response?.data?.detail || 'Voice transcription failed. Please type your message instead.';
-      Alert.alert('Transcription Error', errorMsg);
+      // Show friendly error message
+      Alert.alert(
+        '🎤 Voice processing issue',
+        'Having trouble with voice right now. You can type your message instead!',
+        [{ text: 'Got it' }]
+      );
       setLoading(false);
     }
   };
