@@ -21,11 +21,21 @@ import * as Speech from 'expo-speech';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL;
 
+interface Profile {
+  id: string;
+  name: string;
+  bio: string;
+  career: string;
+  field: string;
+  image: string;
+}
+
 interface Message {
   id: string;
   text: string;
   isAI: boolean;
   timestamp: Date;
+  profiles?: Profile[];
 }
 
 const CAREER_OPTIONS = [
