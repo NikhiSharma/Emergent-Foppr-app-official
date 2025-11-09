@@ -287,14 +287,37 @@ export default function Chat() {
         onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
       >
         {messages.map((message) => (
-          <View
-            key={message.id}
-            style={[
-              styles.messageBubble,
-              message.isAI ? styles.aiMessage : styles.userMessage,
-            ]}
-          >
-            <Text style={styles.messageText}>{message.text}</Text>
+          <View key={message.id}>
+            <View
+              style={[
+                styles.messageBubble,
+                message.isAI ? styles.aiMessage : styles.userMessage,
+              ]}
+            >
+              <Text style={styles.messageText}>{message.text}</Text>
+            </View>
+            
+            {message.profiles && message.profiles.length > 0 && (
+              <View style={styles.profilesContainer}>
+                {message.profiles.map((profile) => (
+                  <View key={profile.id} style={styles.profileCard}>
+                    <Image source={{ uri: profile.image }} style={styles.profileImage} />
+                    <View style={styles.profileInfo}>
+                      <Text style={styles.profileName}>{profile.name}</Text>
+                      <Text style={styles.profileField}>{profile.field}</Text>
+                      <Text style={styles.profileBio} numberOfLines={2}>{profile.bio}</Text>
+                    </View>
+                  </View>
+                ))}
+                <TouchableOpacity 
+                  style={styles.seeMoreButton}
+                  onPress={() => router.push('/(tabs)/discover')}
+                >
+                  <Text style={styles.seeMoreText}>See more people and their projects</Text>
+                  <Ionicons name="arrow-forward" size={16} color="#4A90E2" />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         ))}
         {loading && (
