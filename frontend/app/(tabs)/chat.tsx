@@ -115,6 +115,7 @@ export default function Chat() {
     setMessages((prev) => [...prev, userMessage]);
     setInputText('');
     setLoading(true);
+    setShowWelcome(false);
 
     try {
       const token = await AsyncStorage.getItem('authToken');
@@ -132,6 +133,16 @@ export default function Chat() {
       };
 
       setMessages((prev) => [...prev, aiMessage]);
+      
+      // Check if the message is career-related
+      const careerKeywords = ['career', 'job', 'work', 'project', 'certification', 'course', 'mentor', 'skill', 'learning', 'education', 'profession', 'business', 'startup'];
+      const isCareerRelated = careerKeywords.some(keyword => 
+        text.toLowerCase().includes(keyword) || response.data.response.toLowerCase().includes(keyword)
+      );
+      
+      if (isCareerRelated && messages.length === 0) {
+        setShowCareerOptions(true);
+      }
       
       // Optional: Speak the response
       // Speech.speak(response.data.response);
