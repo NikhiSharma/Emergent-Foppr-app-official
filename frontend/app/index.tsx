@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useThemeStore, getThemeColors, gradientColors } from './store/themeStore';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Index() {
   const router = useRouter();
+  const { mode, gradient, loadTheme } = useThemeStore();
+  const colors = getThemeColors(mode);
+  const accentColors = gradientColors[gradient];
+
+  useEffect(() => {
+    loadTheme();
+  }, []);
 
   return (
     <View style={styles.container}>
