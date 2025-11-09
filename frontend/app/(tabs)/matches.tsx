@@ -40,10 +40,23 @@ export default function Matches() {
 
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     loadTheme();
-    fetchMatches();
+  }, []);
+
+  // Refresh matches every time the tab is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchMatches();
+    }, [])
+  );
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await fetchMatches();
+    setRefreshing(false);
   }, []);
 
   const fetchMatches = async () => {
