@@ -360,25 +360,50 @@ async def get_chat_history(current_user: dict = Depends(get_current_user)):
 
 # ==================== PROFILE ENDPOINTS ====================
 
-@api_router.get("/profiles", response_model=List[Profile])
+@api_router.get("/profiles")
 async def get_profiles(current_user: dict = Depends(get_current_user), field: Optional[str] = None, limit: Optional[int] = 20):
+    """Get profiles based on user preferences and filters - shows REAL user profiles"""
     # Get profiles that user hasn't swiped on yet
     user_swipes = await db.swipes.find({"user_id": current_user["id"]}).to_list(1000)
-    swiped_profile_ids = [swipe["profile_id"] for swipe in user_swipes]
+    swiped_user_ids = [swipe["profile_id"] for swipe in user_swipes]
     
-    query = {"id": {"$nin": swiped_profile_ids}}
+    # Base query: exclude current user and already swiped users
+    query = {
+        "id": {"$nin": swiped_user_ids + [current_user["id"]]},
+        "is_profile_complete": True  # Only show users with complete profiles
+    }
     
-    # Filter by field if provided
-    if field:
+    # Get user's preference for who they're looking for
+    looking_for = current_user.get("looking_for", "everyone")
+    
+    # Apply filtering based on user preference or explicit field parameter
+    filter_field = field if field else (looking_for if looking_for != "everyone" else None)
+    
+    if filter_field and filter_field != "everyone":
+        # Filter by specific field (AI, Business, etc.)
         query["$or"] = [
-            {"field": {"$regex": field, "$options": "i"}},
-            {"career": {"$regex": field, "$options": "i"}},
-            {"bio": {"$regex": field, "$options": "i"}}
+            {"field": {"$regex": filter_field, "$options": "i"}},
+            {"career": {"$regex": filter_field, "$options": "i"}},
+            {"interests": {"$regex": filter_field, "$options": "i"}}
         ]
     
-    profiles = await db.profiles.find(query).to_list(limit)
+    # Get real user profiles from users collection
+    users = await db.users.find(query, {"hashed_password": 0}).to_list(limit)
     
-    return [Profile(**profile) for profile in profiles]
+    # Transform user data to profile format
+    profiles = []
+    for user in users:
+        profiles.append({
+            "id": user["id"],
+            "name": user["name"],
+            "bio": user.get("bio", "No bio available"),
+            "career": user.get("career", "Career not specified"),
+            "university": user.get("university", "University not specified"),
+            "field": user.get("field", "Field not specified"),
+            "image": user.get("profile_image", "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzRBOTBFMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPj88L3RleHQ+PC9zdmc+")
+        })
+    
+    return profiles
 
 @api_router.post("/profiles/swipe")
 async def swipe_profile(swipe_data: SwipeAction, current_user: dict = Depends(get_current_user)):
