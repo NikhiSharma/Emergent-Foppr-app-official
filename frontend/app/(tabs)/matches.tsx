@@ -120,7 +120,7 @@ export default function Matches() {
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>Your Matches</Text>
-        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{matches.length} mentors</Text>
+        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{matches.length} peers</Text>
       </View>
 
       {matches.length === 0 ? (
