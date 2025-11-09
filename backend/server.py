@@ -86,6 +86,7 @@ class User(BaseModel):
     interests: Optional[List[str]] = []
     looking_for: Optional[str] = "everyone"  # "everyone", "AI", "Business", etc.
     profile_image: Optional[str] = None  # base64
+    github_url: Optional[str] = None  # GitHub profile URL
     is_profile_complete: bool = False
 
 class Token(BaseModel):
