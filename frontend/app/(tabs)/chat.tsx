@@ -382,7 +382,12 @@ export default function Chat() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Foppr</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <TouchableOpacity onPress={() => setShowMenu(!showMenu)}>
+            <Ionicons name="menu" size={28} color={accentColor} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>Foppr</Text>
+        </View>
         <View style={{ flexDirection: 'row', gap: 12 }}>
           <TouchableOpacity onPress={() => setShowThemeCustomizer(true)}>
             <Ionicons name="color-palette" size={24} color={accentColor} />
@@ -392,6 +397,45 @@ export default function Chat() {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Hamburger Menu */}
+      {showMenu && (
+        <View style={[styles.menuOverlay, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => {
+              setShowMenu(false);
+              router.push('/(tabs)/discover');
+            }}
+          >
+            <Ionicons name="compass" size={24} color={accentColor} />
+            <Text style={[styles.menuText, { color: colors.text }]}>Explore</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => {
+              setShowMenu(false);
+              router.push('/(tabs)/profile');
+            }}
+          >
+            <Ionicons name="person" size={24} color={accentColor} />
+            <Text style={[styles.menuText, { color: colors.text }]}>Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => {
+              setShowMenu(false);
+              // Settings functionality coming soon
+              Alert.alert('Settings', 'Settings page coming soon!');
+            }}
+          >
+            <Ionicons name="settings" size={24} color={accentColor} />
+            <Text style={[styles.menuText, { color: colors.text }]}>Settings</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {showWelcome && messages.length === 0 ? renderWelcomeScreen() : renderChatScreen()}
       
