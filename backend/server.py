@@ -603,7 +603,7 @@ async def seed_test_users():
             "email": "testuser2@foppr.com",
             "name": "Michael Rodriguez",
             "hashed_password": get_password_hash("password123"),
-            "bio": "Business Analyst turned Data Scientist. Happy to share my journey and mentor others!",
+            "bio": "Business Analyst turned Data Scientist. Happy to share my journey with peers!",
             "field": "Business & AI",
             "career": "Data Science Lead at Microsoft",
             "university": "UC Berkeley",
@@ -709,7 +709,7 @@ async def seed_old_profiles():
         },
         {
             "name": "Michael Rodriguez",
-            "bio": "Business Analyst turned Data Scientist. Happy to share my journey and mentor others!",
+            "bio": "Business Analyst turned Data Scientist. Happy to share my journey with peers!",
             "career": "Data Science Lead at Microsoft",
             "university": "UC Berkeley",
             "field": "Business & AI",
