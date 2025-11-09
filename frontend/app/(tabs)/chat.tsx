@@ -204,6 +204,7 @@ export default function Chat() {
     if (!recordingObj) return;
 
     try {
+      setLoading(true);
       await recordingObj.stopAndUnloadAsync();
       const uri = recordingObj.getURI();
       setRecording(false);
@@ -211,18 +212,47 @@ export default function Chat() {
 
       if (!uri) {
         Alert.alert('Error', 'Failed to record audio');
+        setLoading(false);
         return;
       }
 
-      // Show alert about voice feature
-      Alert.alert(
-        'Voice Feature Coming Soon',
-        'Voice transcription will be available soon! For now, please use the text input below to share your thoughts.',
-        [{ text: 'OK' }]
+      // Send audio to backend for transcription
+      const token = await AsyncStorage.getItem('authToken');
+      const formData = new FormData();
+      
+      // Create file object from URI
+      formData.append('audio_file', {
+        uri: uri,
+        type: 'audio/m4a',
+        name: 'recording.m4a',
+      } as any);
+
+      const transcriptionResponse = await axios.post(
+        `${API_URL}/api/transcribe`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 60000, // 60 second timeout for transcription
+        }
       );
+
+      const transcribedText = transcriptionResponse.data.text;
+      
+      if (transcribedText && transcribedText.trim()) {
+        // Send the transcribed text as a message to AI
+        await sendMessage(transcribedText);
+      } else {
+        Alert.alert('Error', 'Could not understand the audio. Please try again or type your message.');
+        setLoading(false);
+      }
     } catch (error: any) {
-      console.error('Failed to stop recording:', error);
-      Alert.alert('Error', 'Please use text input for now.');
+      console.error('Failed to transcribe audio:', error);
+      const errorMsg = error.response?.data?.detail || 'Voice transcription failed. Please type your message instead.';
+      Alert.alert('Transcription Error', errorMsg);
+      setLoading(false);
     }
   };
 
