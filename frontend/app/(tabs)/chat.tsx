@@ -447,21 +447,6 @@ const styles = StyleSheet.create({
     color: '#999',
     lineHeight: 20,
   },
-  orDivider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-    gap: 12,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#333',
-  },
-  dividerText: {
-    color: '#666',
-    fontSize: 14,
-  },
   messagesContainer: {
     flex: 1,
   },
