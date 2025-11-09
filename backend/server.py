@@ -374,8 +374,9 @@ async def transcribe_audio(audio_file: UploadFile = File(...), current_user: dic
                 }
                 
                 # Use emergent proxy URL for whisper
+                proxy_url = os.getenv("INTEGRATION_PROXY_URL", "https://integrations.emergentagent.com")
                 response = await client.post(
-                    'https://llm.api.withemergent.com/v1/audio/transcriptions',
+                    f'{proxy_url}/llm/v1/audio/transcriptions',
                     files=files,
                     data=data,
                     headers=headers
