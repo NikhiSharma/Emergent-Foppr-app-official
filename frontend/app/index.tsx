@@ -9,7 +9,7 @@ export default function Index() {
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Foppr</Text>
-        <Text style={styles.subtitle}>AI-Powered Career Guidance & Mentorship</Text>
+        <Text style={styles.subtitle}>Because Ideas Deserve Action.</Text>
         
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
