@@ -72,6 +72,7 @@ const CAREER_OPTIONS = [
 ];
 
 export default function Chat() {
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
