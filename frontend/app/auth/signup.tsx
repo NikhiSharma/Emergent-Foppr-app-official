@@ -55,7 +55,7 @@ export default function Signup() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
           <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Start your career journey today</Text>
+          <Text style={styles.subtitle}>Most people build for work, not passion. What about you?</Text>
 
           <View style={styles.form}>
             <TextInput
