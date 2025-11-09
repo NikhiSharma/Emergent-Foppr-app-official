@@ -78,7 +78,7 @@ export default function Login() {
         
         <View style={styles.content}>
           <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue your journey</Text>
+          <Text style={styles.subtitle}>{welcomeMessage}</Text>
 
           <View style={styles.form}>
             <TextInput
