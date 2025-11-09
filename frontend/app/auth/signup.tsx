@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Constants from 'expo-constants';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeStore, getThemeColors, gradientColors } from '../store/themeStore';
+import { useThemeStore, getThemeColors, gradientColors } from '../../store/themeStore';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL;
