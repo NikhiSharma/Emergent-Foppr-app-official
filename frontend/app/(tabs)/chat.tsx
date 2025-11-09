@@ -354,30 +354,68 @@ const styles = StyleSheet.create({
   },
   welcomeContainer: {
     flex: 1,
-  },
-  welcomeContent: {
     padding: 24,
   },
-  welcomeHeader: {
-    marginBottom: 32,
+  greetingSection: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  welcomeTitle: {
-    fontSize: 28,
+  greetingText: {
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 12,
     textAlign: 'center',
+    marginBottom: 48,
+    lineHeight: 40,
   },
-  welcomeSubtitle: {
+  inputOptionsContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  voiceInputButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  voiceInputText: {
+    color: '#4A90E2',
     fontSize: 16,
+    marginTop: 12,
+    fontWeight: '500',
+  },
+  orTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+    width: '80%',
+  },
+  orLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#333',
+  },
+  orText: {
+    color: '#666',
+    fontSize: 14,
+    marginHorizontal: 16,
+  },
+  typePrompt: {
     color: '#999',
+    fontSize: 16,
+  },
+  optionsScrollView: {
+    maxHeight: '50%',
+  },
+  optionsTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 16,
     textAlign: 'center',
-    lineHeight: 24,
   },
   optionsGrid: {
     gap: 16,
-    marginBottom: 32,
   },
   optionCard: {
     flexDirection: 'row',
