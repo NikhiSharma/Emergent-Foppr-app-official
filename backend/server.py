@@ -555,9 +555,126 @@ async def transcribe_audio(audio_file: UploadFile = File(...), current_user: dic
 
 # ==================== SEED DATA ENDPOINT ====================
 
+@api_router.post("/seed/test-users")
+async def seed_test_users():
+    """Create test users with complete profiles for testing"""
+    
+    # Check if test users already exist
+    existing_test_users = await db.users.count_documents({"email": {"$regex": "testuser.*@foppr.com"}})
+    if existing_test_users > 0:
+        return {"message": f"Already have {existing_test_users} test users"}
+    
+    test_users = [
+        {
+            "id": str(uuid.uuid4()),
+            "email": "testuser1@foppr.com",
+            "name": "Sarah Chen",
+            "hashed_password": get_password_hash("password123"),
+            "bio": "AI Engineer with background in Economics. Love helping students transition into tech!",
+            "field": "AI & Economics",
+            "career": "Senior ML Engineer at Google",
+            "university": "Stanford University",
+            "skills": ["Machine Learning", "Python", "TensorFlow"],
+            "interests": ["AI", "Deep Learning", "Economics"],
+            "looking_for": "AI",
+            "profile_image": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzRBOTBFMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPnNDPC90ZXh0Pjwvc3ZnPg==",
+            "is_profile_complete": True,
+            "created_at": datetime.utcnow()
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "email": "testuser2@foppr.com",
+            "name": "Michael Rodriguez",
+            "hashed_password": get_password_hash("password123"),
+            "bio": "Business Analyst turned Data Scientist. Happy to share my journey and mentor others!",
+            "field": "Business & AI",
+            "career": "Data Science Lead at Microsoft",
+            "university": "UC Berkeley",
+            "skills": ["Data Analysis", "Business Strategy", "Python"],
+            "interests": ["Business", "AI", "Data Science"],
+            "looking_for": "everyone",
+            "profile_image": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzM0QTg1MyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk1SPC90ZXh0Pjwvc3ZnPg==",
+            "is_profile_complete": True,
+            "created_at": datetime.utcnow()
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "email": "testuser3@foppr.com",
+            "name": "Emily Watson",
+            "hashed_password": get_password_hash("password123"),
+            "bio": "Economics PhD working on AI policy. Love discussing career transitions from social sciences to tech!",
+            "field": "Economics & AI Policy",
+            "career": "AI Policy Researcher at OpenAI",
+            "university": "MIT",
+            "skills": ["Economics", "Policy", "Research"],
+            "interests": ["AI", "Economics", "Policy"],
+            "looking_for": "AI",
+            "profile_image": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0U5MUU2MyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkVXPC90ZXh0Pjwvc3ZnPg==",
+            "is_profile_complete": True,
+            "created_at": datetime.utcnow()
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "email": "testuser4@foppr.com",
+            "name": "David Kim",
+            "hashed_password": get_password_hash("password123"),
+            "bio": "Product Manager with Economics degree. Can help with career pivots and project ideas!",
+            "field": "Business & Product",
+            "career": "Senior PM at Meta",
+            "university": "Harvard Business School",
+            "skills": ["Product Management", "Strategy", "UX"],
+            "interests": ["Business", "Product", "Startups"],
+            "looking_for": "Business",
+            "profile_image": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0ZCQkMwNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkRLPC90ZXh0Pjwvc3ZnPg==",
+            "is_profile_complete": True,
+            "created_at": datetime.utcnow()
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "email": "testuser5@foppr.com",
+            "name": "Priya Sharma",
+            "hashed_password": get_password_hash("password123"),
+            "bio": "Self-taught developer from Finance background. Passionate about helping career switchers!",
+            "field": "Finance & Tech",
+            "career": "Software Engineer at Stripe",
+            "university": "NYU Stern",
+            "skills": ["Software Development", "Finance", "Python"],
+            "interests": ["Tech", "Finance", "Coding"],
+            "looking_for": "everyone",
+            "profile_image": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzlDMjdCMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBTPC90ZXh0Pjwvc3ZnPg==",
+            "is_profile_complete": True,
+            "created_at": datetime.utcnow()
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "email": "testuser6@foppr.com",
+            "name": "Alex Thompson",
+            "hashed_password": get_password_hash("password123"),
+            "bio": "Consultant turned AI Entrepreneur. Love sharing startup insights and AI project ideas!",
+            "field": "Consulting & AI",
+            "career": "Founder at AI Startup",
+            "university": "Cambridge",
+            "skills": ["AI", "Consulting", "Entrepreneurship"],
+            "interests": ["AI", "Startups", "Innovation"],
+            "looking_for": "AI",
+            "profile_image": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0ZGNTcyMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjYwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ci4zZW0iPkFUPC90ZXh0Pjwvc3ZnPg==",
+            "is_profile_complete": True,
+            "created_at": datetime.utcnow()
+        },
+    ]
+    
+    await db.users.insert_many(test_users)
+    
+    return {"message": f"Created {len(test_users)} test users with complete profiles"}
+
 @api_router.post("/seed/profiles")
 async def seed_profiles():
-    """Create mock profiles for testing"""
+    """Legacy endpoint - redirects to seed test users"""
+    return await seed_test_users()
+
+@api_router.post("/seed/old-profiles")
+async def seed_old_profiles():
+    """Create old mock profiles in profiles collection (deprecated)"""
     
     # Check if profiles already exist
     existing_count = await db.profiles.count_documents({})
