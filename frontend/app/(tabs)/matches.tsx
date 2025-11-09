@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,6 +15,7 @@ import axios from 'axios';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useThemeStore, getThemeColors, gradientColors } from '../../store/themeStore';
+import { useFocusEffect } from '@react-navigation/native';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL;
 
