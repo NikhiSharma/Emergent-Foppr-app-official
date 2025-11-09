@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Constants from 'expo-constants';
 import { Ionicons } from '@expo/vector-icons';
+import { useThemeStore, getThemeColors, gradientColors } from '../store/themeStore';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL;
 
@@ -34,12 +36,20 @@ const WELCOME_MESSAGES = [
 
 export default function Login() {
   const router = useRouter();
+  const { mode, gradient, loadTheme } = useThemeStore();
+  const colors = getThemeColors(mode);
+  const accentColors = gradientColors[gradient];
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [welcomeMessage] = useState(() => 
     WELCOME_MESSAGES[Math.floor(Math.random() * WELCOME_MESSAGES.length)]
   );
+
+  useEffect(() => {
+    loadTheme();
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -65,7 +75,7 @@ export default function Login() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -73,18 +83,18 @@ export default function Login() {
           style={styles.backButton}
           onPress={() => router.back()}
         >
-          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         
         <View style={styles.content}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>{welcomeMessage}</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Welcome Back</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{welcomeMessage}</Text>
 
           <View style={styles.form}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }]}
               placeholder="Email"
-              placeholderTextColor="#666"
+              placeholderTextColor={colors.textSecondary}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -92,27 +102,34 @@ export default function Login() {
             />
 
             <TextInput
-              style={styles.input}
+              style={[styles.input, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }]}
               placeholder="Password"
-              placeholderTextColor="#666"
+              placeholderTextColor={colors.textSecondary}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
               autoCapitalize="none"
             />
 
-            <TouchableOpacity
+            <LinearGradient
+              colors={accentColors}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={[styles.button, loading && styles.buttonDisabled]}
-              onPress={handleLogin}
-              disabled={loading}
             >
-              <Text style={styles.buttonText}>
-                {loading ? 'Signing In...' : 'Sign In'}
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonInner}
+                onPress={handleLogin}
+                disabled={loading}
+              >
+                <Text style={styles.buttonText}>
+                  {loading ? 'Signing In...' : 'Sign In'}
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
 
             <TouchableOpacity onPress={() => router.push('/auth/signup')}>
-              <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
+              <Text style={[styles.linkText, { color: accentColors[0] }]}>Don't have an account? Sign Up</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -124,7 +141,6 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
   },
   scrollContent: {
     flexGrow: 1,
@@ -144,32 +160,29 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFFFFF',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#999',
     marginBottom: 32,
   },
   form: {
     gap: 16,
   },
   input: {
-    backgroundColor: '#1A1A1A',
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    color: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#333',
   },
   button: {
-    backgroundColor: '#4A90E2',
     borderRadius: 12,
+    marginTop: 8,
+    overflow: 'hidden',
+  },
+  buttonInner: {
     padding: 16,
     alignItems: 'center',
-    marginTop: 8,
   },
   buttonDisabled: {
     opacity: 0.6,
@@ -180,7 +193,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   linkText: {
-    color: '#4A90E2',
     textAlign: 'center',
     marginTop: 8,
     fontSize: 14,
