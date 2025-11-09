@@ -234,7 +234,7 @@ export default function Chat() {
   const renderWelcomeScreen = () => (
     <View style={styles.welcomeContainer}>
       <View style={styles.greetingSection}>
-        <Text style={styles.greetingText}>
+        <Text style={[styles.greetingText, { color: colors.text }]}>
           How is your day going{userName ? ` ${userName}` : ''}?
         </Text>
         
@@ -246,20 +246,20 @@ export default function Chat() {
             <Ionicons 
               name={recording ? 'stop-circle' : 'mic'} 
               size={48} 
-              color={recording ? '#E91E63' : '#4A90E2'} 
+              color={recording ? '#E91E63' : accentColor} 
             />
-            <Text style={styles.voiceInputText}>
+            <Text style={[styles.voiceInputText, { color: accentColor }]}>
               {recording ? 'Tap to stop' : 'Tap to speak'}
             </Text>
           </TouchableOpacity>
 
           <View style={styles.orTextContainer}>
-            <View style={styles.orLine} />
-            <Text style={styles.orText}>or</Text>
-            <View style={styles.orLine} />
+            <View style={[styles.orLine, { backgroundColor: colors.border }]} />
+            <Text style={[styles.orText, { color: colors.textSecondary }]}>or</Text>
+            <View style={[styles.orLine, { backgroundColor: colors.border }]} />
           </View>
 
-          <Text style={styles.typePrompt}>Type how you're feeling</Text>
+          <Text style={[styles.typePrompt, { color: colors.textSecondary }]}>Type how you're feeling</Text>
         </View>
       </View>
 
