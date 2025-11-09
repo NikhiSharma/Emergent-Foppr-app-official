@@ -15,24 +15,31 @@ export default function Index() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.content}>
-        <Text style={styles.title}>Foppr</Text>
-        <Text style={styles.subtitle}>Because Ideas Deserve Action.</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Foppr</Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Because Ideas Deserve Action.</Text>
         
         <View style={styles.buttonContainer}>
-          <TouchableOpacity 
+          <LinearGradient
+            colors={accentColors}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
             style={styles.primaryButton}
-            onPress={() => router.push('/auth/signup')}
           >
-            <Text style={styles.primaryButtonText}>Get Started</Text>
-          </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.buttonInner}
+              onPress={() => router.push('/auth/signup')}
+            >
+              <Text style={styles.primaryButtonText}>Get Started</Text>
+            </TouchableOpacity>
+          </LinearGradient>
           
           <TouchableOpacity 
-            style={styles.secondaryButton}
+            style={[styles.secondaryButton, { borderColor: accentColors[0] }]}
             onPress={() => router.push('/auth/login')}
           >
-            <Text style={styles.secondaryButtonText}>Sign In</Text>
+            <Text style={[styles.secondaryButtonText, { color: accentColors[0] }]}>Sign In</Text>
           </TouchableOpacity>
         </View>
       </View>
